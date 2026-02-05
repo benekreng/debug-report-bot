@@ -25,21 +25,21 @@ describe('ThreadTracker', () => {
   it('should add a thread to tracking', () => {
     tracker.addThread('thread123', 'channel456');
     
-    expect(tracker.threadIdsToProcess).toHaveLength(1);
+    expect(tracker.threadsWaiting).toHaveLength(1);
     expect(tracker.trackedThreads).toHaveLength(1);
-    expect(tracker.threadIdsToProcess[0].threadId).toBe('thread123');
-    expect(tracker.threadIdsToProcess[0].channelId).toBe('channel456');
+    expect(tracker.threadsWaiting[0].threadId).toBe('thread123');
+    expect(tracker.threadsWaiting[0].channelId).toBe('channel456');
   });
 
-  it('should find a thread in processing queue', () => {
+  it('should find a thread in waiting queue', () => {
     tracker.addThread('thread123', 'channel456');
-    const idx = tracker.findThreadToProcess('thread123');
+    const idx = tracker.findThreadInWaiting('thread123');
     
     expect(idx).toBe(0);
   });
 
   it('should return -1 for thread not in queue', () => {
-    const idx = tracker.findThreadToProcess('nonexistent');
+    const idx = tracker.findThreadInWaiting('nonexistent');
     
     expect(idx).toBe(-1);
   });
@@ -52,14 +52,14 @@ describe('ThreadTracker', () => {
     const updated = tracker.updateThreadTimestamp('thread123', newTimestamp);
     
     expect(updated).toBe(true);
-    expect(tracker.threadIdsToProcess[0].timestamp).toBe(newTimestamp);
+    expect(tracker.threadsWaiting[0].timestamp).toBe(newTimestamp);
   });
 
-  it('should remove thread from processing queue', () => {
+  it('should remove thread from waiting queue', () => {
     tracker.addThread('thread123', 'channel456');
-    tracker.removeThreadFromProcessing('thread123');
+    tracker.removeThreadFromWaiting('thread123');
     
-    expect(tracker.threadIdsToProcess).toHaveLength(0);
+    expect(tracker.threadsWaiting).toHaveLength(0);
   });
 
   it('should remove thread from tracking', () => {
@@ -286,7 +286,7 @@ describe('processThread', () => {
     
     expect(result.success).toBe(false);
     expect(result.error).toBe('fetch_failed');
-    expect(tracker.threadIdsToProcess).toHaveLength(0); // Should be removed
+    expect(tracker.threadsWaiting).toHaveLength(0); // Should be removed
   });
 
   it('should fail if channel is not allowed', async () => {
