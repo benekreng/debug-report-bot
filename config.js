@@ -16,11 +16,22 @@ if (fs.existsSync(configPath)) {
 }
 
 /** Known channel/thread IDs by purpose (override via config.json or env) */
-export const channels = {
-  oxiOneBugs: config.oxiOneBugsChannelId,
-  e16Bugs: config.e16BugsChannelId,
+export const Channels = {
+  OXI_ONE_BUGS: 'OXI_ONE_BUGS',
+  E16_BUGS: 'E16_BUGS',
 };
 
+export const channels = {
+  OXI_ONE_BUGS: config.oxiOneBugsChannelId,
+  E16_BUGS: config.e16BugsChannelId,
+};
+
+/** Reverse mapping for O(1) lookups: Discord ID -> Enum value */
+export const channelIdToEnum = Object.fromEntries(
+  Object.entries(channels).map(([enumVal, id]) => [id, enumVal])
+);
+
+// Clean up undefined channels
 Object.keys(channels).forEach(key => {
   if (!channels[key]) {
     let channelName = key;
