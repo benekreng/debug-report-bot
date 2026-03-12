@@ -19,3 +19,6 @@ Thumbs.db
 # Build files (if using TypeScript)
 dist/
 out/
+
+# Test fixtures with real data
+__tests__/fixtures/threads.json

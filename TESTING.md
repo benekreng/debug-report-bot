@@ -64,7 +64,31 @@ The `app.js` file now uses the refactored functions:
 - Better separation of concerns
 - Uses ThreadTracker for state management
 
-### 5. Testing Infrastructure
+### 5. Real Thread Data Fixtures
+
+To complement mock factories with real-world test data, we created:
+
+#### Fetch Script (`scripts/fetchThreads.js`)
+- Fetches active and archived threads from Discord channels
+- Serializes thread metadata and messages to JSON
+- Includes attachments, user info, and timestamps
+- Usage: `node scripts/fetchThreads.js [channelId] [numThreads]`
+
+#### Thread Loader (`__tests__/loaders/threadLoader.js`)
+- Loads JSON fixtures into Discord.js-like objects
+- Helper functions:
+  - `loadThreadsFromFixture()` - Load all threads
+  - `getThreadById(id)` - Get specific thread
+  - `getAllThreads()` - Get array of all threads
+  - `getRandomThread()` - Get random thread
+  - `getThreadsBy(predicate)` - Filter threads
+
+#### Fixture Storage
+- Real data stored in `__tests__/fixtures/threads.json` (gitignored)
+- Example structure in `threads.example.json` (committed)
+- Documentation in `__tests__/fixtures/README.md`
+
+### 6. Testing Infrastructure
 
 - **Jest** configured for ES modules
 - Test scripts in `package.json`:
@@ -85,6 +109,44 @@ npm run test:watch
 # Run specific test file
 npm test -- messageHandler.test.js
 ```
+
+## Working with Real Thread Data
+
+### Fetching Thread Fixtures
+
+To fetch real Discord threads for testing:
+
+```bash
+# Fetch 20 threads from default channel (OXI_ONE_BUGS)
+node scripts/fetchThreads.js
+
+# Fetch 10 threads from a specific channel
+node scripts/fetchThreads.js 1234567890 10
+```
+
+This creates `__tests__/fixtures/threads.json` with real thread data.
+
+### Using Fixtures in Tests
+
+```javascript
+import { 
+  loadThreadsFromFixture,
+  getRandomThread,
+  getAllThreads 
+} from './loaders/threadLoader.js';
+
+// Load all threads
+const { threads, threadCount } = loadThreadsFromFixture();
+
+// Get a random thread for testing
+const thread = getRandomThread();
+const messages = await thread.messages.fetch();
+
+// Use with your message handler
+const formatted = formatThreadMessages(messages);
+```
+
+See `__tests__/integration.example.test.js` for complete examples.
 
 ## Test Results
 
@@ -121,11 +183,33 @@ const message = createMockMessage({
 ### State Management
 The ThreadTracker class encapsulates all thread state management, making it easy to test state transitions in isolation.
 
+## Test Data Strategies
+
+### Mock Factories (Unit Tests)
+Use factories from `__tests__/factories/discord.js` for:
+- Fast, isolated unit tests
+- Testing edge cases and error conditions
+- Predictable, controlled test data
+- No external dependencies
+
+### Real Thread Fixtures (Integration Tests)
+Use fixtures from `__tests__/loaders/threadLoader.js` for:
+- Integration testing with realistic data
+- Validating formatting and parsing logic
+- Testing with actual message patterns
+- Ensuring real-world compatibility
+
+### When to Use Each
+- **Unit tests**: Use mock factories for testing individual functions in isolation
+- **Integration tests**: Use real fixtures to test the full flow with realistic data
+- **Edge cases**: Create specific mocks to test error conditions not in fixtures
+
 ## Next Steps
 
 Potential improvements:
-1. Add integration tests with real Discord.js mocks
+1. ~~Add integration tests with real Discord.js mocks~~ ✅ Complete
 2. Add coverage reporting with `jest --coverage`
 3. Test error scenarios more thoroughly
 4. Add tests for the LangChain agent module
 5. Mock timer functions for timeout testing without waiting
+6. Add CI/CD to automatically run tests on PRs

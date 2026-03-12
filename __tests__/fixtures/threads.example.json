@@ -1,0 +1,58 @@
+{
+  "fetchedAt": "2026-02-05T12:00:00.000Z",
+  "channelId": "123456789",
+  "channelName": "bug-reports",
+  "threadCount": 2,
+  "threads": [
+    {
+      "id": "thread-1",
+      "name": "Example Bug Thread",
+      "parentId": "123456789",
+      "type": 11,
+      "archived": false,
+      "createdTimestamp": 1706000000000,
+      "parent": {
+        "id": "123456789",
+        "name": "bug-reports"
+      },
+      "messages": [
+        {
+          "id": "msg-1",
+          "content": "I found a bug in the app",
+          "author": {
+            "id": "user-1",
+            "username": "testuser",
+            "discriminator": "0001",
+            "tag": "testuser#0001",
+            "bot": false
+          },
+          "channelId": "thread-1",
+          "createdTimestamp": 1706000000000,
+          "attachments": []
+        },
+        {
+          "id": "msg-2",
+          "content": "Here's a screenshot",
+          "author": {
+            "id": "user-1",
+            "username": "testuser",
+            "discriminator": "0001",
+            "tag": "testuser#0001",
+            "bot": false
+          },
+          "channelId": "thread-1",
+          "createdTimestamp": 1706000010000,
+          "attachments": [
+            {
+              "id": "attach-1",
+              "url": "https://cdn.discordapp.com/attachments/123/456/screenshot.png",
+              "contentType": "image/png",
+              "size": 204800,
+              "filename": "screenshot.png"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
